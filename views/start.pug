@@ -5,10 +5,18 @@ html(lang="en")
         link(rel="stylesheet", href="../public/assets/css/main.css")
         link(rel="stylesheet", href="../public/assets/css/start.css")
         link(href="https://fonts.googleapis.com/css?family=Roboto:400,900,700,500,300,200,100", rel='stylesheet', type='text/css')
+        script(src='/public/scripts/start.js')
     body
         div.wrapper
             div.mainWindow
                 div.greeting-container
                     div.greeting
+                        div.leaderboard-box(id="leaderboard-box")
+                           div.leaderboard-header LEADERBOARD
+                           div.leaderboard-results(id='leaderboard-results')
                         p.greeting-text Welcome to the My JS Game!
-                        a.greeting-button(href='http://localhost:8080/game') Start
+                        form(class="form-box", id="form", action="/game", method="get")
+                            label.form-box__label To start the game please enter the player's name:
+                            input.form-box__input(required, name="username", placeholder="Player's name")
+                            input.greeting-button(type="submit", value="start", onclick="savePlayer()")
+

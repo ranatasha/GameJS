@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const greet = document.getElementById('greeting');
-    const player = localStorage['game.username'];
-    greet.innerHTML = `Hello, ${player}!`;
+    const user = document.getElementById('username');
+    user.innerHTML = localStorage['game.username'];
 })
 
 // Таблица рекордов, startpage and her styles, сохранение username - ЕСТЬ

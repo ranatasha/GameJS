@@ -5,6 +5,23 @@ html(lang="en")
         link(rel="stylesheet", href="../public/assets/css/main.css")
         link(rel="stylesheet", href="../public/assets/css/game.css")
         link(href="https://fonts.googleapis.com/css?family=Roboto:400,900,700,500,300,200,100", rel='stylesheet', type='text/css')
+        link(href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap", rel="stylesheet")
         script(src='/public/scripts/game.js')
     body
-        div(id='greeting')
+        div.wrapper
+            div.mainWindow
+                div.gameWindow
+                    div.gameWindow-box
+                        div.gameWindow-header My JS Game
+                        div.gameWindow-userInfo-box
+                            div.userInfo-table
+                                div.userinfo-item Username:
+                                div.userinfo-item(id='username')
+                                div.userInfo-item Score:
+                                div.userInfo-item(id='score') 0
+                                div.userInfo-item Health:
+                                div.userInfo-item(id='health') 100
+                        div.gameWindow-task Kill all the enemies and Open the door with the key to go to the next level.
+                        div.gameWindow-canvas
+                            canvas(id='canvasId')
+                                p Canvas rendering is not supported by your browser:(

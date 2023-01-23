@@ -1,5 +1,4 @@
 export class MapManager {
-    imgLoadCount;
 
     constructor(lvl) {
         this.lvl = lvl; // соответствующий уровень карты
@@ -10,6 +9,9 @@ export class MapManager {
         this.tSize = {x: 16, y: 16};    // размер блока в пикселях
         this.mapSize = {x: 16, y: 16};  // ширина и высота карты (вычисляется, но для удобства и экономии вычислений, на каждом цикле обновления карты)
         this.tilesets = [];             //  массив описаний блоков карты(их номера, размеры, координаты и тд)
+        this.imgLoadCount = 0;          // кол-во загруженных изображений, необходимо, чтобы отображать карту ТОЛЬКО после загрузки ВСЕХ изображений
+        this.imgLoaded = false;
+        this.jsonLoaded = false;
         this.loadMap(`/public/data/lvl${lvl}.json`);
     }
 
@@ -27,9 +29,7 @@ export class MapManager {
 
     // парсим JSON-карту в объект MapManager
     parseMap(tilesJSON) { // установка полей MapManager в соответствии с полученными из JSON значениями
-
-//? var img = new Image() в for'е ниже, но так как у нас один tileset, то и изображение одно
-        const img = new Image();
+        
         this.mapData = JSON.parse(tilesJSON);   // парсим полученный с сервера JSON-строку в объект
         this.xCount = this.mapData.width;       // сохранение кол-ва блоков по горизонтали
         this.yCount = this.mapData.height;      // сохранение кол-ва блоков по вертикали
@@ -38,11 +38,8 @@ export class MapManager {
         this.mapSize.x = this.xCount * this.tSize.x;    // вычисление ширины карты
         this.mapSize.y = this.yCount * this.tSize.y;    // вычисление высоты карты
 
-//? можно ли убрать в конструктор вместе с this.imgLoaded:false this.jsonLoaded: false
-        this.imgLoadCount = 0;                          // кол-во загруженных изображений, необходимо, чтобы отображать карту ТОЛЬКО после загрузки ВСЕХ изображений
-
         for (let i = 0; i < this.mapData.tilesets.length; i++) {
-
+            var img = new Image();
             // загружаем изображения tileset'ов
             img.onload = () => {
                 this.imgLoadCount++;

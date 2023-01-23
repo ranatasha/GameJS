@@ -13,14 +13,14 @@
     flex-direction:column;
     align-items:center;
     line-height: 100%;
-    min-width: 1199px;
+    min-width: 1080px;
 }
 .gameWindow-header {
     font-size:35px;
     line-height: 100%;
     font-family: 'Yeseva One', monospace;
     color: #FFF;
-    text-shadow: deeppink 1px 3px 15px;
+    text-shadow: deepskyblue 1px 3px 15px;
 
 }
 .gameWindow-userInfo-box, .gameWindow-task {
@@ -55,8 +55,14 @@
 
 .gameWindow-canvas {
     margin-top: 15px;
-    border:1px solid #fff;
-    border-radius:6px;
-    width: 512px;
+    /*border:10px solid #000;*/
+    /*border-radius:6px;*/
+    width: 960px;
     height: 512px;
+    margin-bottom: 5px;
+
+}
+#canvasId{
+    border:2px solid #fff;
+    border-radius:6px;
 }

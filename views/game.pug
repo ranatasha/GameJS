@@ -6,7 +6,8 @@ html(lang="en")
         link(rel="stylesheet", href="../public/assets/css/game.css")
         link(href="https://fonts.googleapis.com/css?family=Roboto:400,900,700,500,300,200,100", rel='stylesheet', type='text/css')
         link(href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap", rel="stylesheet")
-        script(src='/public/scripts/game.js')
+        //script(src='/public/scripts/Managers/MapManager.js', type='module')
+        script(src='/public/scripts/game.js', type='module')
     body
         div.wrapper
             div.mainWindow
@@ -23,5 +24,5 @@ html(lang="en")
                                 div.userInfo-item(id='health') 100
                         div.gameWindow-task Kill all the enemies and Open the door with the key to go to the next level.
                         div.gameWindow-canvas
-                            canvas(id='canvasId')
+                            canvas(id='canvasId', width='960', height='512')
                                 p Canvas rendering is not supported by your browser:(

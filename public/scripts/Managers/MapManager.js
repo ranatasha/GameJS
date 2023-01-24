@@ -1,4 +1,4 @@
-export class MapManager {
+/*export*/ class MapManager {
 
     constructor(lvl) {
         this.lvl = lvl; // соответствующий уровень карты
@@ -29,7 +29,6 @@ export class MapManager {
 
     // парсим JSON-карту в объект MapManager
     parseMap(tilesJSON) { // установка полей MapManager в соответствии с полученными из JSON значениями
-        
         this.mapData = JSON.parse(tilesJSON);   // парсим полученный с сервера JSON-строку в объект
         this.xCount = this.mapData.width;       // сохранение кол-ва блоков по горизонтали
         this.yCount = this.mapData.height;      // сохранение кол-ва блоков по вертикали
@@ -121,38 +120,38 @@ export class MapManager {
             }
         return null;    // если такого tileset не найдено
     }
-    /*
-    parseEntities(gameManager, physicManager, soundManager) {   // разбор слоя типа objectgroup
+    
+    parseEntities(gameManager/*, physicManager, soundManager*/) {   // разбор слоя объектов -  objectgroup
         if (!this.imgLoaded || !this.jsonLoaded) {
-            setTimeout(() => { this.parseEntities(gameManager, physicManager, soundManager); }, 100);
+            setTimeout(() => { this.parseEntities(gameManager/*, physicManager, soundManager*/); }, 100);
         } else
-            for (let j = 0; j < this.mapData.layers.length; j++)
+            for (let j = 0; j < this.mapData.layers.length; j++)    // перебираем слои JSON-карты и находим среди них слой объектов -  objectgroup
                 if(this.mapData.layers[j].type === 'objectgroup') {
-                    const entities = this.mapData.layers[j];
-                    for (let i = 0; i < entities.objects.length; i++) {
+
+                    const entities = this.mapData.layers[j];        // сохраняем список объектов
+                    for (let i = 0; i < entities.objects.length; i++) {     // перебираем объекты слоя
                         const e = entities.objects[i];
                         try {
-                            const obj = new gameManager.factory[e.class](physicManager, soundManager);
+                            const obj = new gameManager.factory[e.class](/*physicManager, soundManager*/);      // создаем объект с помощью фабрики GameManager'a по классу объекта
                             obj.name = e.name;
                             obj.pos_x = e.x;
                             obj.pos_y = e.y;
                             obj.size_x = e.width;
                             obj.size_y = e.height;
-                            gameManager.entities.push(obj);
+                            gameManager.entities.push(obj); // добавляем в GameManger ссылку на объект, чтобы смогли отслеживать его
                             if(obj.name === 'Player')
-                                gameManager.initPlayer(obj);
+                                gameManager.initPlayer(obj);    // если объект - Player, то инициализируем его через GameManager
                         } catch (ex) {
-                            console.log('Error while creating: [' + e.gid + '] ' + e.class +
-                                ', ' + ex);
+                            console.log('Error while creating: [' + e.id + '] ' + e.class + ', ' + ex);
                         }
                     }
                 }
     }
-    getTilesetIdx(x, y){
+    getTilesetIdx(x, y){    // получение тайла из тайлсета по индексу, используя координаты тайла в тайлсете в пикселях
         const wX = x;
         const wY = y;
-        const idx = Math.floor(wY / this.tSize.y) * this.xCount + Math.floor(wX / this.tSize.x);
-        return this.tLayer.data[idx];
+        const idx = Math.floor(wY / this.tSize.y) * this.xCount + Math.floor(wX / this.tSize.x); // кол-во строк тайлов до тайла * кол-во блоков по горизонтали  +
+                                                                                                       // + кол-во блоков до тайла по горизонтали
+        return this.tLayer.data[idx];   // возвращает 
     }
-     */
 }

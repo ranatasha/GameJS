@@ -1,11 +1,11 @@
-export class SpriteManager {
+/*export*/ class SpriteManager {
     image = new Image();
     sprites = [];   // массив объектов-спрайтов (содержат имя, координаты спрайта на изображении, длина и ширина изображения спрайта)
     imgLoaded = false;
     jsonLoaded = false;
     constructor() {
         // Атлас - JSON с инфой о размещении каждого отдельного изображения в Spritesheet
-        this.loadAtlas('http://localhost:3001/public/data/sprites.json', 'public/assets/sprites/spritesheet.png');
+        this.loadAtlas('http://localhost:8080/public/data/sprites.json', 'public/assets/sprites/spritesheet.png');
     }
     loadAtlas(atlasJson, atlasImg) {    // передаем путь до atlasJSON, чтобы отправить запрос на сервер, и до atlasImg, чтобы загрузить изображение атласа
         const request = new XMLHttpRequest();
@@ -36,8 +36,7 @@ export class SpriteManager {
     drawSprite(ctx, name, x, y) {                                       // заливка спрайта
                     // ctx нужен, чтобы знать, на каком холсте заливать
                     // name - знать, какой спрайт нужно залить, н-р, player_left1
-                    // x, y - координаты, куда заливать
-
+                    // x, y - координаты объекта, куда заливать
         if (!this.imgLoaded || !this.jsonLoaded) {                      // проверяем, что и изображение и JSON обработаны, все поля установлены
             setTimeout( ()=> { this.drawSprite(ctx, name,
                 x, y); }, 100);

@@ -29,7 +29,7 @@
         if (this.move_x === 0 && this.move_y < 0)
             spriteManager.drawSprite(ctx, `fireball_up${this.currentSprite}`, this.pos_x, this.pos_y);
     }
-    update(){
+    update(){   // передвижение объекта, обновление его состояния(здоровья)
         /*this.physicManager.update(this);*/
     }
     onTouchEntity(obj){

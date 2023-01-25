@@ -27,41 +27,54 @@
         this.fireNum = 0;
         this.player = null;
         this.laterKill = [];
+        this.curLevel = level;
+
+        this.factory['Player'] = Player;
+        this.factory['Skeleton'] = Skeleton;
+        this.factory['Boss'] = Boss;
+        this.factory['Heart'] = Heart;
+        this.factory['Key'] = Key;
+        this.factory['Potion'] = Potion;
+        this.factory['Fireball'] = Fireball;
+        this.factory['Arrow'] = Arrow;
+
+        this.loadLevel(level);  // внутри есть отрисовка тайлов и карты, загрузка уровня
+        this.spriteManager = new SpriteManager();   // подготовка массива sprites, отрисовка объектов будет уже непосредственно в this.draw(), где перебираются объекты и вызывается draw()
+
+        //this.eventsManager = new EventsManager(canvas);
+
         // this.soundManager = new SoundManager();
         // this.soundManager.loadArray(['blaster.mp3', 'crunch.mp3', 'background.mp3']);
         // this.soundManager.play('background.mp3', {looping: true});
 
-        this.curLevel = level;
-        this.factory['Player'] = Player;
-        this.factory['Skeleton'] = Skeleton;
-        this.factory['Heart'] = Heart;
-        this.factory['Key'] = Key;
-
-        //this.eventsManager = new EventsManager(canvas);
-
-        this.loadLevel(level);
-        this.spriteManager = new SpriteManager();
-
     }
 
-    loadLevel(level) {
+    loadLevel(level) {  // вызывается в конструкторе gameManager
         console.log('loading level: ', level)
         this.entities = [];
-        this.player = undefined;
+        this.player = undefined;    // назначается при parseEntities() ниже
         this.mapManager = new MapManager(level);
         //this.physicManager = new PhysicManager(this, this.mapManager);
         this.mapManager.parseEntities(this/*, this.physicManager, this.soundManager*/);
-        this.mapManager.draw(this.ctx);
+        this.mapManager.draw(this.ctx);         // отрисовка карты, тайлов
     }
     factory = {};
 
-    initPlayer(obj) {
+    play() {
+        localStorage['score'] = 0;
+
+        this.interval = setInterval( (( (self) => () => {
+            self.update();
+        })(this)), 100 );
+    }
+
+    initPlayer(obj) {       // вызывается в parseEntities, где извлекаются и перебираются объекты на карте(player в том числе)
         this.player = obj;
     }
-    kill(obj) {
+    kill(obj) {             // gameManager.kill(obj) - добавляет объекты с список laterkill, кого уничтожить, убрать с карты по завершении такта / хода
         this.laterKill.push(obj);
     }
-    update() {
+    update() {              // изменение состояния карты / объектов на каждом шаге
         document.getElementById('health').innerHTML = `${this.player.lifetime}`;
         document.getElementById('score').innerHTML = `${this.score}`;
 
@@ -119,7 +132,7 @@
         if(this.laterKill.length > 0) {
             this.laterKill.length = 0;
         }*/
-        this.mapManager.draw(this.ctx);
+        this.mapManager.draw(this.ctx); // перерисовка карты
         // mapManager.centerAt(this.player.pos_x, this.player.pos_y);
         this.draw(this.ctx);
         // if(this.currentLevel === 1) noEnemiesLeft = true;
@@ -134,23 +147,16 @@
     /*
     nextLevel(){
         clearInterval(this.interval);
-        if (this.currentLevel === 2){
+        if (this.curLevel === 2){
             this.endGame();
         } else{
-            this.currentLevel += 1;
+            this.curLevel += 1;
             this.loadLevel(this.currentLevel, this.canvas);
             alert('Вы переходите на следующий уровень');
             this.play();
         }
     }
     */
-
-    play() {
-        localStorage['score'] = 0;
-
-        this.interval = setInterval((((self) => () => {
-            self.update();
-        })(this)), 100);}
 
     endGame() {
         clearInterval(this.interval);

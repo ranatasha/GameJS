@@ -6,8 +6,20 @@ html(lang="en")
         link(rel="stylesheet", href="../public/assets/css/game.css")
         link(href="https://fonts.googleapis.com/css?family=Roboto:400,900,700,500,300,200,100", rel='stylesheet', type='text/css')
         link(href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap", rel="stylesheet")
-        //script(src='/public/scripts/Managers/MapManager.js', type='module')
-        script(src='/public/scripts/game.js', type='module')
+        script(src='/public/scripts/Managers/GameManager.js')
+        script(src='/public/scripts/Managers/SpriteManager.js')
+        script(src='/public/scripts/Managers/MapManager.js')
+        script(src='/public/scripts/Managers/PhysicManager.js')
+        script(src='/public/scripts/Entities/Entity.js')
+        script(src='/public/scripts/Entities/Arrow.js')
+        script(src='/public/scripts/Entities/Boss.js')
+        script(src='/public/scripts/Entities/Fireball.js')
+        script(src='/public/scripts/Entities/Heart.js')
+        script(src='/public/scripts/Entities/Key.js')
+        script(src='/public/scripts/Entities/Player.js')
+        script(src='/public/scripts/Entities/Potion.js')
+        script(src='/public/scripts/Entities/Skeleton.js')
+        script(src='/public/scripts/game.js')
     body
         div.wrapper
             div.mainWindow
@@ -19,9 +31,9 @@ html(lang="en")
                                 div.userinfo-item Username:
                                 div.userinfo-item(id='username')
                                 div.userInfo-item Score:
-                                div.userInfo-item(id='score') 0
+                                div.userInfo-item(id='score')
                                 div.userInfo-item Health:
-                                div.userInfo-item(id='health') 100
+                                div.userInfo-item(id='health')
                         div.gameWindow-task Kill all the enemies and Open the door with the key to go to the next level.
                         div.gameWindow-canvas
                             canvas(id='canvasId', width='960', height='512')

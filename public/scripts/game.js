@@ -1,11 +1,9 @@
-import { MapManager } from './Managers/MapManager.js';
+// import { GameManager } from './Managers/GameManager.js';
+
 document.addEventListener('DOMContentLoaded', function() {
-    const user = document.getElementById('username');
-    user.innerHTML = localStorage['game.username'];
-    const mapManager = new MapManager(1);
     const canvasGame = document.getElementById('canvasId');
-    const ctx = canvasGame.getContext('2d');
-    mapManager.draw(ctx);
+    const gameManager = new GameManager(canvasGame, 1);
+    gameManager.play();
 })
 
 // Таблица рекордов, startpage and her styles, сохранение username - ЕСТЬ

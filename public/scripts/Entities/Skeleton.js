@@ -29,20 +29,25 @@
             spriteManager.drawSprite(ctx, `skelet_up${this.currentSprite}`, this.pos_x, this.pos_y);
         }
     }
-    update(){
-        if(this.lifetime <= 0) 
-            this.kill();
-        /*this.physicManager.update(this);*/
-    }
+
+    // update() реализовано общим принципом в PhysicManager, в GameManager update() каждого объекта будет выполняться через PhysicManager.update(obj)
+    
     onTouchEntity(obj){
-        if(obj instanceof Player){
+        if(obj instanceof Fireball){
+            obj.lifetime -= 50;
+            obj.kill()
+        }
+        if(obj instanceof  Player){
             obj.lifetime -= 3;
         }
 
     }
-    kill(){ // Уничтожения объекта
-        // this.soundManager.play('crunch.mp3');
-        // this.physicManager.gameManager.score += 100;
-        // this.physicManager.gameManager.kill(this);
+    
+    // kill() не нужен, поскольку в GameManager после update() шага игры проверяется isKilled() и в зав-ти от этого добавляется в gameManager.laterkill[]
+    
+    isKilled(){ // вызывается после update() шага игры - добавлять в  gameManager.laterKill[] или нет
+        if( this.lifetime <= 0 )
+            return true;
+        return false;
     }
 }

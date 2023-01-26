@@ -6,15 +6,6 @@
 // import {Heart} from '../Entities/Heart.js';
 // import {Key} from '../Entities/Key.js';
 
-
-
-// import {Bonus} from './units/bonus.js';
-// import {Bullet} from './units/bullet.js';
-// import {Spider} from './units/spider.js';
-// import {PhysicManager} from './physic.manager.js';
-// import {SoundManager} from './soundManager.js';
-
-
 /*export*/ class GameManager {
     constructor(canvas, level) {
         const user = document.getElementById('username');
@@ -28,6 +19,7 @@
         this.player = null;
         this.laterKill = [];
         this.curLevel = level;
+        this.boss = null;
 
         this.factory['Player'] = Player;
         this.factory['Skeleton'] = Skeleton;
@@ -36,7 +28,6 @@
         this.factory['Key'] = Key;
         this.factory['Potion'] = Potion;
         this.factory['Fireball'] = Fireball;
-        this.factory['Arrow'] = Arrow;
 
         this.loadLevel(level);  // внутри есть отрисовка тайлов и карты, загрузка уровня
         this.spriteManager = new SpriteManager();   // подготовка массива sprites, отрисовка объектов будет уже непосредственно в this.draw(), где перебираются объекты и вызывается draw()
@@ -50,19 +41,16 @@
     }
 
     loadLevel(level) {  // вызывается в конструкторе gameManager
-        console.log('loading level: ', level)
         this.entities = [];
         this.player = undefined;    // назначается при parseEntities() ниже
         this.mapManager = new MapManager(level);
-        //this.physicManager = new PhysicManager(this, this.mapManager);
+        this.physicManager = new PhysicManager(this, this.mapManager);
         this.mapManager.parseEntities(this/*, this.physicManager, this.soundManager*/);
         this.mapManager.draw(this.ctx);         // отрисовка карты, тайлов
     }
     factory = {};
 
     play() {
-        localStorage['score'] = 0;
-
         this.interval = setInterval( (( (self) => () => {
             self.update();
         })(this)), 100 );
@@ -84,59 +72,170 @@
         if (this.player.lifetime <= 0) {
             this.endGame();
         }
-        /*
-        this.player.move_x = 0;
+
+        // подготовка передвижения игрока и его выстрелов
+        this.player.move_x = 0;     // изначально
         this.player.move_y = 0;
+        /*
         if (this.eventsManager.action['up']) this.player.move_y = -1;
         if (this.eventsManager.action['down']) this.player.move_y = 1;
         if (this.eventsManager.action['left']) this.player.move_x = -1;
         if (this.eventsManager.action['right']) this.player.move_x = 1;
         if (this.eventsManager.action['fire']) {
-            this.soundManager.play('blaster.mp3');
-            const bullet1 = new Bullet(this.physicManager, this.soundManager, this.player, this.eventsManager.action.click);
-            const bullet2 = new Bullet(this.physicManager, this.soundManager, this.player, this.eventsManager.action.click);
-            bullet2.pos_x += bullet2.move_x*20 ;
-            bullet2.pos_y += bullet2.move_y*20;
+            //this.soundManager.play('blaster.mp3');
+            const fb = new Fireball();
 
-            this.entities.push(bullet1);
-            this.entities.push(bullet2);
+            fb.pos_x += fb.move_x*20 ;
+
+            this.entities.push(fb);
 
             this.eventsManager.action['fire'] = false;
             // this.player.fire();
+        }*/
+        
+        // передвигаем все объекты
+        let isEnemiesLeft = false;
+        
+        // нахождение координат босса
+        if(!this.boss && this.curLevel === 2) {
+            this.boss = this.entities.find(obj => obj.name === 'Boss')
+            this.bossInterval = setInterval(()=>{
+                this.boss.fire(this)
+            }, 3000)
         }
-        let noEnemiesLeft = true;
+        
+        console.log(this.entities)
         this.entities.forEach((e) => {
             try {
-                if(e instanceof Spider){
-                    e.move_x = Math.sign(this.player.pos_x - e.pos_x);
-                    e.move_y = Math.sign(this.player.pos_y - e.pos_y);
-                    noEnemiesLeft = false;
+                // предварительно подготавливаем движение стрел
+                if( e instanceof Arrow){
+                    e.pos_x += e.move_x * 10;
+                    e.pos_y += e.move_y * 10;
+                    this.physicManager.update(e);
                 }
-                if ( e instanceof Spider && Math.abs(e.pos_x - this.player.pos_x) +Math.abs(e.pos_y - this.player.pos_y) > 160) {
-                    e.move_x = 0;
-                    e.move_y = 0;
+                // предварительно подготавливаем движение скелетов перед каждым шагом, поскольку движение меняется в ходе игры
+                else if(e instanceof Skeleton && Math.abs(e.pos_x - this.player.pos_x) + Math.abs(e.pos_y - this.player.pos_y) <= 120){  // приближение к игроку
+                    isEnemiesLeft = true;
+                    if(e.move_x === 0){
+                        e.move_x = Math.sign(this.player.pos_x - e.pos_x);
+                        e.move_y = 0;
+                    } else if(e.move_y === 0) {
+                        e.move_y = Math.sign(this.player.pos_y - e.pos_y);
+                        e.move_x = 0;
+                    }
+                    this.physicManager.update(e);
+                } else if ( e instanceof Skeleton && Math.abs(e.pos_x - this.player.pos_x) + Math.abs(e.pos_y - this.player.pos_y) > 120) { //самостоятельное движение вдали от игрока
+                    isEnemiesLeft = true;
+                    if(e.name.match(/Skelet[135]/)){
+                        if(e.move_x === 0 && e.move_y === 0){
+                            e.move_x = 1;
+                            e.move_y = 0;
+                        }
+                        let motion = this.physicManager.update(e);
+                        if(motion === 'break') {    // если уперлись во что-то, то меняем направление
+                            e.move_x = -e.move_x;
+                        }
+                    }
+                    if(e.name.match(/Skelet[24]/)){
+                        if(e.move_x === 0 && e.move_y === 0) {
+                            e.move_x = 0;
+                            e.move_y = 1;
+                        }
+                        let motion = this.physicManager.update(e);
+                        if(motion === 'break') {    // если уперлись во что-то, то меняем направление
+                            e.move_y = -e.move_y;
+                        }
+                    }
+                // предварительно подготавливаем движение босса перед каждым шагом, поскольку движение меняется в ходе игры
+                } else if ( e instanceof Boss) {
+                    isEnemiesLeft = true;
+                    if(Math.abs(e.pos_x - this.player.pos_x) + Math.abs(e.pos_y - this.player.pos_y) <= 120) {
+                        isEnemiesLeft = true;
+                        if(e.move_x === 0){
+                            e.move_x = Math.sign(this.player.pos_x - e.pos_x);
+                            e.move_y = 0;
+                        } else if( e.move_y === 0) {
+                            e.move_y = Math.sign(this.player.pos_y - e.pos_y);
+                            e.move_x = 0;
+                        }
+                        this.physicManager.update(e);
+                    } else if(Math.abs(e.pos_x - this.player.pos_x) + Math.abs(e.pos_y - this.player.pos_y) > 120){
+                        isEnemiesLeft = true;
+                        if(e.move_x === 0 && e.move_y === 0) {
+                            e.move_x = 0;
+                            e.move_y = 1;
+                        }
+                        let motion = this.physicManager.update(e);
+                        if(motion === 'break') {    // если уперлись во что-то, то меняем направление
+                            let tmp = e.move_y;
+                            e.move_y = -e.move_x;
+                            e.move_x = tmp;
+                        }
+                    }
+                } else {    // передвигаем остальные объекты (игрока, стрелы, выстрелы)
+                    this.physicManager.update(e);   // делаем шаг, перемещаем объекты в physicManager, обновляя их координаты и состояние
                 }
-                e.update();
+                if(e.isKilled()){
+                    this.laterKill.push(e)
+                    if(e instanceof Skeleton)
+                        this.score += 100;
+                    if(e instanceof Boss){
+                        this.score += 500;
+                        this.endGame()
+                    }
+
+                }
             } catch(ex) {
                 console.log(ex);
             }
         });
+        
         for(let i = 0; i < this.laterKill.length; i++) {
             const idx = this.entities.indexOf(this.laterKill[i]);
-            console.log(idx);
             if(idx > -1) {
-
                 this.entities.splice(idx, 1);
             }
         }
         if(this.laterKill.length > 0) {
             this.laterKill.length = 0;
-        }*/
+        }
+
         this.mapManager.draw(this.ctx); // перерисовка карты
-        // mapManager.centerAt(this.player.pos_x, this.player.pos_y);
-        this.draw(this.ctx);
-        // if(this.currentLevel === 1) noEnemiesLeft = true;
-        //if(noEnemiesLeft) this.nextLevel();
+        this.draw(this.ctx);            // перерисовка объектов-спрайтов
+        
+        // установка и генерация стрел
+        // if(this.curLevel === 2 && this.boss && this.boss.currentSprite % 3 == 2) {
+        //
+        //     const ar_up = new Arrow(); // параметры задают направление движения move_x, move_y каждой стрелы
+        //     ar_up.move_x = 0;
+        //     ar_up.move_y = -1;
+        //     ar_up.pos_x = this.boss.x;
+        //     ar_up.pos_y = this.boss.y - 20;
+        //     this.entities.push(ar_up);
+        //
+        //     // const ar_left = new Arrow();
+        //     // ar_left.move_x = -1;
+        //     // ar_left.move_y = 0;
+        //     // ar_left.pos_x = this.boss.x - 20;
+        //     // ar_left.pos_y = this.boss.y;
+        //     // this.entities.push(ar_left);
+        //     //
+        //     // const ar_right = new Arrow();
+        //     // ar_right.move_x = 1;
+        //     // ar_right.move_y = 0;
+        //     // ar_right.pos_x = this.boss.x + 20;
+        //     // ar_right.pos_y = this.boss.y;
+        //     // this.entities.push(ar_right);
+        //     //
+        //     // const ar_down = new Arrow();
+        //     // ar_down.move_x = 0;
+        //     // ar_down.move_y = 1;
+        //     // ar_down.pos_x = this.boss.x;
+        //     // ar_down.pos_y = this.boss.y + 20;
+        //     // this.entities.push(ar_down);
+        // }
+        if(!isEnemiesLeft)
+            this.nextLevel();
     }
 
     draw() {
@@ -160,6 +259,7 @@
 
     endGame() {
         clearInterval(this.interval);
+        clearInterval(this.bossInterval)
         /*
         const scores = new Map(JSON.parse(localStorage.scores ?? '[]'));
         if ((scores.get(localStorage.name) ?? 0) <= this.score) { scores.set(localStorage.name, this.score); }

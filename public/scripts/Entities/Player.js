@@ -31,10 +31,10 @@
             spriteManager.drawSprite(ctx, `player_up${this.currentSprite}`, this.pos_x, this.pos_y);
         }
     }
-    update(){             // изменение состояния на каждом шаге
-        /*this.physicManager.update(this);*/
-    }
-    onTouchEntity(obj){  // обработка встречи с препятствием
+    
+    // update() реализовано общим принципом в PhysicManager, в GameManager update() каждого объекта будет выполняться через PhysicManager.update(obj)
+    
+    onTouchEntity(obj){  // обработка встречи с объектом
         if (obj instanceof Heart){
             this.lifetime += 25;
             obj.kill();
@@ -47,10 +47,31 @@
             this.hasKey = true;
             obj.kill()
         }
+        if(obj instanceof Skeleton) {
+            this.lifetime -= 5;
+        }
+        if(obj instanceof Boss) {
+            this.lifetime -= 8;
+        }
+        if(obj instanceof Arrow) {
+            this.lifetime -= 10;
+            obj.kill();
+        }
     }
-    kill(){ // уничтожения объекта
+    
+    onTouchMap(ts){ // на карте нет шипов или чего-то подобного, поэтому состояние игрока не меняется
+        if (ts === 159) // наткнулся на шипы
+            this.lifetime -= 2;
+    }
 
+    // kill() не нужен, поскольку в GameManager после update() шага игры проверяется isKilled() и в зав-ти от этого добавляется в gameManager.laterkill[]
+
+    isKilled(){ // вызывается после update() шага игры - добавлять в  gameManager.laterKill[] или нет
+        if( this.lifetime <= 0 )
+            return true;
+        return false;
     }
+    
     fire(){     // выстрел
         var fb = new Fireball();
 

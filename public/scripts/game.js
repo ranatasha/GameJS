@@ -1,7 +1,6 @@
 // import { GameManager } from './Managers/GameManager.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('hello')
     const canvasGame = document.getElementById('canvasId');
     const gameManager = new GameManager(canvasGame, 1);
     gameManager.play();

@@ -11,10 +11,12 @@ class PhysicManager {
         
         const e = this.entityAtXY(obj, newX, newY);                                         // проверяем, есть ли объекты на новых координатах
         if (e !== null && obj.onTouchEntity) {                                              // если есть и есть метод обработки столкновений, обрабатываем столкновения
-            console.log(obj, e);
+            if(!((obj instanceof Boss && e instanceof Arrow)||(obj instanceof Arrow && e instanceof Boss))  // исключаем логи наступлений босса на свои стрелы
+                && !((obj instanceof Player && e instanceof Fireball)||(obj instanceof Fireball && e instanceof  Player))) // исключаем логи наступлений игрока на свои удары, потому что это не изменяет состояния
+                console.log(obj, e);
             obj.onTouchEntity(e)
         }
-        const ts = this.mapManager.getTilesetIdx(newX + obj.size_x/1.25,    // получаем индекс тайла в тайлсете по новым координатам, /2 потому что координаты округлили до меньшего целого
+        const ts = this.mapManager.getTilesetIdx(newX + obj.size_x/1.25,    // получаем индекс тайла в тайлсете по новым координатам, /1.25 потому что координаты округлили до меньшего целого
             newY + obj.size_y/1.25);
 
         const passableCells = [23, 24, 56, 57, 166];        // индексы "проходимых" тайлов

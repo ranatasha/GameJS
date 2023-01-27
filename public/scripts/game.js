@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const canvasGame = document.getElementById('canvasId');
-    const gameManager = new GameManager(canvasGame, 1);
+    const gameManager = new GameManager(canvasGame, 2);
     gameManager.play();
 })
 

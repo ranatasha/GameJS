@@ -43,7 +43,13 @@
     // update() реализовано общим принципом в PhysicManager, в GameManager update() каждого объекта будет выполняться через PhysicManager.update(obj)
 
     // onTouchEntity(obj) - обработка встречи с боссом или скелетом лежит на этих же объектах
-    
+    // не должна быть только на боссе, поскольку удар может прилететь в спину, а onTouchEntity у босса вызывается, только если босс пойдет прямо на ударный шар
+    onTouchEntity(obj){
+        if(obj instanceof Boss){
+            obj.lifetime -= 15;
+            this.kill()
+        }
+    }
     onTouchMap(ts, passableCells) {
         if (passableCells.indexOf(ts) === -1)   // если выстрел уперся в "стену"/препятствие - уничтожаем
             this.kill()

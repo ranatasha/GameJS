@@ -33,10 +33,10 @@
     // update() реализовано общим принципом в PhysicManager, в GameManager update() каждого объекта будет выполняться через PhysicManager.update(obj)
     
     fire(gameManager) {
-        var a_up = new Arrow();
-        var a_down = new Arrow();
-        var a_left = new Arrow();
-        var a_right = new Arrow();
+        var a_up = new gameManager.factory['Arrow'];
+        var a_down = new gameManager.factory['Arrow'];
+        var a_left = new gameManager.factory['Arrow'];
+        var a_right = new gameManager.factory['Arrow'];
         
         var arr = [a_up, a_left, a_down, a_right]
         for (let i=0; i<arr.length;i++) {
@@ -45,21 +45,21 @@
         
         // устанавливаем координаты стрел в каждом направлении
         a_up.pos_x = this.pos_x;
-        a_up.pos_y = this.pos_y - a_up.size_y; // стрела появится сверху от босса
+        a_up.pos_y = this.pos_y - a_up.size_y/2; // стрела появится сверху от босса
         a_up.move_x = 0;
         a_up.move_y = -1;
 
         a_down.pos_x = this.pos_x;
-        a_down.pos_y = this.pos_y + a_down.size_y;  // стрела появится снизу от босса
+        a_down.pos_y = this.pos_y + a_down.size_y/2;  // стрела появится снизу от босса
         a_down.move_x = 0;
         a_down.move_y = 1;
         
-        a_right.pos_x = this.pos_x + a_right.size_x;         // стрела появится справа от босса
+        a_right.pos_x = this.pos_x + a_right.size_x/2;         // стрела появится справа от босса
         a_right.pos_y = this.pos_y;
         a_right.move_x = 1;
         a_right.move_y = 0;
 
-        a_left.pos_x = this.pos_x - a_left.size_x;          // стрела появится слева от босса
+        a_left.pos_x = this.pos_x - a_left.size_x/2;          // стрела появится слева от босса
         a_left.pos_y = this.pos_y;
         a_left.move_x = -1;
         a_left.move_y = 0;
@@ -77,9 +77,9 @@
         if(obj instanceof Player) {
             obj.lifetime -= 5;
         }
-        //if(obj instanceof Arrow){
-        //    obj.kill()
-        //}
+        // if(obj instanceof Arrow) { // может быть такое, что босс наступает на стрелу во время шага, но бессмысленно ее уничтожать
+        //     obj.kill()
+        // }
     }
     
     // kill() не нужен, поскольку в GameManager после update() шага игры проверяется isKilled() и в зав-ти от этого добавляется в gameManager.laterkill[]

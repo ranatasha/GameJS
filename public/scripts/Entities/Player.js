@@ -53,10 +53,10 @@
         if(obj instanceof Boss) {
             this.lifetime -= 8;
         }
-        if(obj instanceof Arrow) {
-            this.lifetime -= 10;
-            obj.kill();
-        }
+        //if(obj instanceof Arrow) {  // не должна лежать на игроке, поскольку стрела может лететь в спину, а player.onTouchEntity(Arrow) вызовется, только если игрок будет "идти" на стрелу
+            //this.lifetime -= 10;
+          //  obj.kill();
+        //}
     }
     
     onTouchMap(ts){ // на карте нет шипов или чего-то подобного, поэтому состояние игрока не меняется

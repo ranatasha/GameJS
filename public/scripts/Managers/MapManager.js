@@ -12,6 +12,7 @@
         this.imgLoadCount = 0;          // кол-во загруженных изображений, необходимо, чтобы отображать карту ТОЛЬКО после загрузки ВСЕХ изображений
         this.imgLoaded = false;
         this.jsonLoaded = false;
+        this.enemiesCount = 0;
         this.loadMap(`/public/data/lvl${lvl}.json`);
     }
 
@@ -133,6 +134,8 @@
                         const e = entities.objects[i];
                         try {
                             const obj = new gameManager.factory[e.class](/*physicManager, soundManager*/);      // создаем объект с помощью фабрики GameManager'a по классу объекта
+                            if(e.class === 'Skeleton' || e.class === 'Boss')
+                                this.enemiesCount++;
                             obj.name = e.name;
                             obj.pos_x = e.x;
                             obj.pos_y = e.y;

@@ -38,6 +38,10 @@
             obj.lifetime -= 10;
             this.kill()
         }
+        if(obj instanceof Fireball){
+            obj.kill()
+            this.kill()
+        }
     }
     onTouchMap(ts, passableCells){
         if (passableCells.indexOf(ts) === -1)   // если выстрел уперся в "стену"/препятствие - уничтожаем

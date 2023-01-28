@@ -40,26 +40,26 @@
         
         var arr = [a_up, a_left, a_down, a_right]
         for (let i=0; i<arr.length;i++) {
-            arr[i].name = 'arrow' + i; // счетчик выстрелов для уникального идентификатора для стрелы
+            arr[i].name = 'arrow' + (++gameManager.fireNum); // счетчик выстрелов для уникального идентификатора для стрелы
         }
         
         // устанавливаем координаты стрел в каждом направлении
         a_up.pos_x = this.pos_x;
-        a_up.pos_y = this.pos_y - a_up.size_y/2; // стрела появится сверху от босса
+        a_up.pos_y = this.pos_y/* - a_up.size_y*/; // стрела появится сверху от босса
         a_up.move_x = 0;
         a_up.move_y = -1;
 
         a_down.pos_x = this.pos_x;
-        a_down.pos_y = this.pos_y + a_down.size_y/2;  // стрела появится снизу от босса
+        a_down.pos_y = this.pos_y/* + a_down.size_y*/;  // стрела появится снизу от босса
         a_down.move_x = 0;
         a_down.move_y = 1;
         
-        a_right.pos_x = this.pos_x + a_right.size_x/2;         // стрела появится справа от босса
+        a_right.pos_x = this.pos_x/* + a_right.size_x*/;         // стрела появится справа от босса
         a_right.pos_y = this.pos_y;
         a_right.move_x = 1;
         a_right.move_y = 0;
 
-        a_left.pos_x = this.pos_x - a_left.size_x/2;          // стрела появится слева от босса
+        a_left.pos_x = this.pos_x/* - a_left.size_x*/;          // стрела появится слева от босса
         a_left.pos_y = this.pos_y;
         a_left.move_x = -1;
         a_left.move_y = 0;
@@ -70,10 +70,6 @@
         
     }
     onTouchEntity(obj){
-        if(obj instanceof Fireball){
-            obj.lifetime -= 10;
-            obj.kill()
-        }
         if(obj instanceof Player) {
             obj.lifetime -= 5;
         }

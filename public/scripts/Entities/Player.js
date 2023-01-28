@@ -4,8 +4,7 @@
 
 /*export*/ class Player extends Entity {
 
-    constructor(/*physicManager, soundManager*/) {
-        //super(physicManager, soundManager);
+    constructor() {
         super()
         this.size_x = 32;
         this.size_y = 32;
@@ -17,8 +16,7 @@
         this.hasKey = false;
     }
     draw(spriteManager, ctx){
-        this.currentSprite = this._currentSprite % 3 + 1;
-
+        this.currentSprite = this.currentSprite % 3 + 1;
         if(this.move_x === 0 && this.move_y === 0) {
             spriteManager.drawSprite(ctx, `player_down2`, this.pos_x, this.pos_y);
         } else if(this.move_x > 0 && this.move_y === 0){
@@ -38,20 +36,17 @@
         if (obj instanceof Heart){
             this.lifetime += 25;
             obj.kill();
+            console.log(`[HEALTH++] You picked up a Heart. Now player's health = ${this.lifetime} .`)
         }
         if(obj instanceof Potion) {
             this.speed += 5;
             obj.kill();
+            console.log(`[SPEED++] You picked up a Potion. Player's speed was increased .`)
         }
         if(obj instanceof Key) {
             this.hasKey = true;
             obj.kill()
-        }
-        if(obj instanceof Skeleton) {
-            this.lifetime -= 5;
-        }
-        if(obj instanceof Boss) {
-            this.lifetime -= 8;
+            console.log(`[KEY] You picked up a Key. Now you can open the door to go to the next level if there're no enemeies on the map.`)
         }
         //if(obj instanceof Arrow) {  // не должна лежать на игроке, поскольку стрела может лететь в спину, а player.onTouchEntity(Arrow) вызовется, только если игрок будет "идти" на стрелу
             //this.lifetime -= 10;
@@ -60,8 +55,10 @@
     }
     
     onTouchMap(ts){ // на карте нет шипов или чего-то подобного, поэтому состояние игрока не меняется
-        if (ts === 159) // наткнулся на шипы
-            this.lifetime -= 2;
+        if (ts === 159) {// наткнулся на шипы
+            this.lifetime -= 8;
+            console.log(`[HEALTH--] Oach! These are spikes which can HURT YOU. Player's health = ${this.lifetime} .`)
+        }
     }
 
     // kill() не нужен, поскольку в GameManager после update() шага игры проверяется isKilled() и в зав-ти от этого добавляется в gameManager.laterkill[]
@@ -72,29 +69,28 @@
         return false;
     }
     
-    fire(){     // выстрел
-        var fb = new Fireball();
+    fire(gameManager, x, y){     // выстрел, передаем направление выстрела  x, y = {-1, 0, 1}
+        var fb = new gameManager.factory['Fireball'];
 
-        fb.name = 'fireball' + (++gameManager.firenum); // счетчик выстрелов для уникального идентификатора при создании объектов
+        fb.name = 'fireball' + (++gameManager.fireNum); // счетчик выстрелов для уникального идентификатора при создании объектов
         
-        fb.move_x = this.move_x;    // направление выстрела совпадает с направлением движения игрока
-        fb.move_y = this.move_y;
+        fb.move_x = x;    // направление выстрела задается пользователем в зав-ти от нажатой стрелки
+        fb.move_y = y;
         
         // устанавливаем координаты стрелы в зависимости от направления выстрела
-        if(this.move_x > 0 && this.move_y === 0){
-            fb.pos_x = this.pos_x + fb.size_x;         // стрела появится справа от босса
+        if(fb.move_x > 0 && fb.move_y === 0){
+            fb.pos_x = this.pos_x;         // fireball появится справа от игрока
             fb.pos_y = this.pos_y;
-        } else if(this.move_x < 0 && this.move_y === 0){
-            fb.pos_x = this.pos_x - fb.size_x;          // стрела появится слева от босса
+        } else if(fb.move_x < 0 && fb.move_y === 0){
+            fb.pos_x = this.pos_x;          // fireball появится слева от игрока
             fb.pos_y = this.pos_y;
-        } else if(this.move_x === 0 && this.move_y > 0){
+        } else if(fb.move_x === 0 && fb.move_y > 0){
             fb.pos_x = this.pos_x;
-            fb.pos_y = this.pos_y + fb.size_y;  // стрела появится снизу от игрока
-        } else if(this.move_x === 0 && this.move_y < 0){
+            fb.pos_y = this.pos_y;  // fireball появится снизу от игрока
+        } else if(fb.move_x === 0 && fb.move_y < 0){
             fb.pos_x = this.pos_x;
-            fb.pos_y = this.pos_y - fb.size_y; // стрела появится сверху от игрока
+            fb.pos_y = this.pos_y; // fireball появится сверху от игрока
         }
-
         gameManager.entities.push(fb)
     }
 }

@@ -2,15 +2,12 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const canvasGame = document.getElementById('canvasId');
-    const gameManager = new GameManager(canvasGame, 2);
+    const gameManager = new GameManager(canvasGame);
     gameManager.play();
 })
-
-// Таблица рекордов, startpage and her styles, сохранение username - ЕСТЬ
-
-// TO-DO-LIST:
-// Стили и офрмление страницы игры, юзер инфа и отведение переменных в localstorage под SCORE - ЕСТЬ
-// Canvas, Tiled Map и ее отображение - ЕСТЬ
-// Создание сущностей объектов - 
-// Загрузка изображений для объектов через SpriteManager -
-// Передвижение игрока и взаимодействие с картой(обработка препятствий, чтоб игрок не выходил за пределы карты, передвижение карты за игроком)
+// только для блокировки скролла страницы с игрой при нажатии клавиш стрелочек
+window.addEventListener("keydown", function(e) {
+    if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+        e.preventDefault();
+    }
+}, false);

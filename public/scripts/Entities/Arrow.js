@@ -43,10 +43,6 @@
             this.kill()
         }
     }
-    onTouchMap(ts, passableCells){
-        if (passableCells.indexOf(ts) === -1)   // если выстрел уперся в "стену"/препятствие - уничтожаем
-            this.kill()
-    }
     
     kill(){ // Уничтожения объекта
         this.isKilledBool = true;

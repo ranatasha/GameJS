@@ -13,18 +13,18 @@ class PhysicManager {
         const e = this.entityAtXY(obj, newX, newY);                                         // проверяем, есть ли объекты на новых координатах
         if (e !== null && obj.onTouchEntity) {                                              // если есть и есть метод обработки столкновений, обрабатываем столкновения
             
-            // обработка столкновений
+            // обработка столкновений с объектами
             obj.onTouchEntity(e)
 
             // логгирование столкновений
             if( obj.lifetime && e.lifetime && !(obj instanceof Skeleton && e instanceof Skeleton) && !(obj instanceof Player)
                 || obj instanceof Arrow && e instanceof Player || obj instanceof Fireball && e instanceof Boss 
                 || obj instanceof Fireball && e instanceof Skeleton)
-                console.log(`[ATTACK] ${obj.name} attacked the ${e.name}. ${e.name}'s health: = ${e.lifetime}`)
+                document.getElementById('msg').innerHTML =`[ATTACK] ${obj.name} attacked the ${e.name}. ${e.name}'s health: = ${e.lifetime}`
             // логгирование подбора бонусов игроком внутри Player.onTouchEntity()
         }
         
-        const ts = this.mapManager.getTilesetIdx(newX + obj.size_x/1.25,    // получаем индекс тайла в тайлсете по новым координатам, /1.25 потому что координаты округлили до меньшего целого
+        const ts = this.mapManager.getTilesetIdx(newX + obj.size_x/1.25,    // получаем индекс тайла в тайлсете по новым координатам, /2 потому что всякое округление до меньшего целого
             newY + obj.size_y/1.25);
         
         
@@ -37,12 +37,11 @@ class PhysicManager {
 
             if ( ts === 135) {         // физика перемещения для телепорта
                 // 135 - телепорт, не меняет состояния игрока
-                if (newX >= 133 && newX <= 168 && newY >= 64 && newY <= 93) {                // верхний телепорт перемещает в нижний
-                    obj.pos_x = 224 + obj.size_x;
+                if (newX >= 133 && newX <= 168 && newY >= 64 && newY <= 99) {                // верхний телепорт перемещает в нижний
+                    obj.pos_x = 224 + obj.size_x;   // добавка, иначе вечный телепорт
                     obj.pos_y = 128 + obj.size_y;
                 }
                 if (newX >= 220 && newX <= 256 && newY >= 100 && newY <= 159) {               // нижний телепорт перемещает в верхний
-                    console.log('hey, im in')
                     obj.pos_x = 160 - obj.size_x;
                     obj.pos_y = 96 - obj.size_y;
                 }
@@ -55,27 +54,38 @@ class PhysicManager {
                 }
                 else {
                     if(!obj.hasKey)
-                        console.log('[INFO] You need to pick up a KEY to go to the next level')
+                        document.getElementById('msg').innerHTML = '[INFO] You need to pick up a KEY to go to the next level'
                     if (this.gameManager.enemiesDeadsCount !== this.mapManager.enemiesCount)
-                        console.log('[INFO] You need to kill ALL ENEMIES to go to the next level')
+                        document.getElementById('msg').innerHTML = '[INFO] You need to kill ALL ENEMIES to go to the next level'
                     return 'break'
                 }
             }
         }
 
         const passableCells = [23, 24, 56, 57, 166, 135];        // индексы "проходимых" тайлов
-
-        if (passableCells.indexOf(ts) !== -1 && (e === null || (e !== null && e instanceof Arrow && obj instanceof Boss) ||
-                                                 (e !== null && e instanceof Fireball && obj instanceof Player) ||
-                                                (e !== null && e instanceof Player && obj instanceof Fireball))) {   // если клетка с новыми координатами "проходима" и на ней нет объектов
-            obj.pos_x = newX;
-            obj.pos_y = newY;
-            return 'move';                  // встаем на нее
-        } else {
-            if((obj instanceof Fireball || obj instanceof Arrow) && passableCells.indexOf(ts) === -1) {   // если стрела/выстрел уперлась в "стену" - уничтожить ее
+        
+        // если клетка "непроходима" - стены
+        if(passableCells.indexOf(ts) === -1){
+            if(obj instanceof Fireball || obj instanceof Arrow) // если стрела/выстрел уперлась в "стену" - уничтожить ее
                 obj.kill()
+            return 'break'
+        // если клетка "проходима"
+        } else if(passableCells.indexOf(ts) !== -1){
+            // и она "не занята" никаким объектом 
+            if(e === null){
+                obj.pos_x = newX;
+                obj.pos_y = newY;
+                return 'move';  // встаем на нее
+            // или "занята", но для игрока fireball'ом, для босса - arrow(стрелой)
+            } else if (e instanceof Arrow && obj instanceof Boss || e instanceof Fireball && obj instanceof Player || e instanceof Player && obj instanceof Fireball){
+                obj.pos_x = newX;
+                obj.pos_y = newY;
+                return 'move';  // все равно встаем на нее
             }
-            return 'break';         // иначе - стоим
+            else {
+                return 'break'; // в остальных "занятых" случаях стоим
+            }
+                
         }
     }
 

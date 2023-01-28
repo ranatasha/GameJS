@@ -12,7 +12,7 @@
         this.lifetime = 50;                     // кол-во жизней
         this.move_x = 0;                        // определяют направление движения
         this.move_y = 0;                        // определяют направление движения
-        this.speed = 3;                         // скорость передвижения
+        this.speed = 5;                         // скорость передвижения
         this.currentSprite = 0;                // для анимации
     }
     draw(spriteManager, ctx){
@@ -43,24 +43,21 @@
             arr[i].name = 'arrow' + (++gameManager.fireNum); // счетчик выстрелов для уникального идентификатора для стрелы
         }
         
-        // устанавливаем координаты стрел в каждом направлении
-        a_up.pos_x = this.pos_x;
-        a_up.pos_y = this.pos_y/* - a_up.size_y*/; // стрела появится сверху от босса
+        // устанавливаем координаты стрел
+        for (let i=0; i<arr.length;i++) {
+            arr[i].pos_x = this.pos_x;
+            arr[i].pos_y = this.pos_y;
+        }
+        // каждой стреле определяем направление выстрела
         a_up.move_x = 0;
         a_up.move_y = -1;
-
-        a_down.pos_x = this.pos_x;
-        a_down.pos_y = this.pos_y/* + a_down.size_y*/;  // стрела появится снизу от босса
+        
         a_down.move_x = 0;
         a_down.move_y = 1;
         
-        a_right.pos_x = this.pos_x/* + a_right.size_x*/;         // стрела появится справа от босса
-        a_right.pos_y = this.pos_y;
         a_right.move_x = 1;
         a_right.move_y = 0;
-
-        a_left.pos_x = this.pos_x/* - a_left.size_x*/;          // стрела появится слева от босса
-        a_left.pos_y = this.pos_y;
+        
         a_left.move_x = -1;
         a_left.move_y = 0;
         
@@ -73,9 +70,6 @@
         if(obj instanceof Player) {
             obj.lifetime -= 5;
         }
-        // if(obj instanceof Arrow) { // может быть такое, что босс наступает на стрелу во время шага, но бессмысленно ее уничтожать
-        //     obj.kill()
-        // }
     }
     
     // kill() не нужен, поскольку в GameManager после update() шага игры проверяется isKilled() и в зав-ти от этого добавляется в gameManager.laterkill[]

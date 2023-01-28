@@ -11,7 +11,7 @@
         this.lifetime = 50;                     // кол-во жизней
         this.move_x = 0;                        // определяют направление движения
         this.move_y = 0;                        // определяют направление движения
-        this.speed = 5;                         // скорость передвижения
+        this.speed = 6;                         // скорость передвижения
         this.currentSprite = 0;                // для анимации
         this.hasKey = false;
     }
@@ -36,17 +36,17 @@
         if (obj instanceof Heart){
             this.lifetime += 25;
             obj.kill();
-            console.log(`[HEALTH++] You picked up a Heart. Now player's health = ${this.lifetime} .`)
+            document.getElementById('msg').innerHTML = `[HEALTH++] You picked up a Heart. Player's health = ${this.lifetime} .`
         }
         if(obj instanceof Potion) {
             this.speed += 5;
             obj.kill();
-            console.log(`[SPEED++] You picked up a Potion. Player's speed was increased .`)
+            document.getElementById('msg').innerHTML = `[SPEED++] You picked up a Potion. Player's speed was increased: ${this.speed} .`
         }
         if(obj instanceof Key) {
             this.hasKey = true;
             obj.kill()
-            console.log(`[KEY] You picked up a Key. Now you can open the door to go to the next level if there're no enemeies on the map.`)
+            document.getElementById('msg').innerHTML = `[KEY] You picked up a Key. Now you can open the door to go to the next level if there're no enemeies on the map.`
         }
         //if(obj instanceof Arrow) {  // не должна лежать на игроке, поскольку стрела может лететь в спину, а player.onTouchEntity(Arrow) вызовется, только если игрок будет "идти" на стрелу
             //this.lifetime -= 10;
@@ -57,7 +57,7 @@
     onTouchMap(ts){ // на карте нет шипов или чего-то подобного, поэтому состояние игрока не меняется
         if (ts === 159) {// наткнулся на шипы
             this.lifetime -= 8;
-            console.log(`[HEALTH--] Oach! These are spikes which can HURT YOU. Player's health = ${this.lifetime} .`)
+            document.getElementById('msg').innerHTML = `[HEALTH--] Oach! These are spikes which can HURT YOU. Player's health = ${this.lifetime} .`
         }
     }
 

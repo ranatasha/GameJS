@@ -20,5 +20,5 @@
 </ul>
 
 <h2>Demonstration of game process</h2>
-![](https://github.com/ranatasha/GameJS/blob/master/demonstration.gif)
+<img src="https://github.com/ranatasha/GameJS/blob/master/demonstration.gif" width="690" height="388" />
 

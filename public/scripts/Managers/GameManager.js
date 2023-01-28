@@ -37,8 +37,8 @@ class GameManager {
         this.spriteManager = new SpriteManager();   // подготовка массива sprites, отрисовка объектов будет уже непосредственно в this.draw(), где перебираются объекты и вызывается draw()
         this.eventsManager = new EventsManager(canvas);
         this.soundManager = new SoundManager();
-        this.soundManager.loadArray(['/public/assets/sounds/fireball.mp3', '/public/assets/sounds/crunch.mp3', '/public/assets/sounds/background.mp3']);
-        this.soundManager.play('/public/assets/sounds/background.mp3', {looping: true});
+        this.soundManager.loadArray(['/public/assets/sounds/fireball.mp3', '/public/assets/sounds/pickup.mp3', '/public/assets/sounds/background.mp3']);
+        this.soundManager.play('/public/assets/sounds/background.mp3', {looping: true, volume: 0.2});
         
 
         // подключаем остальные менеджеры
@@ -241,12 +241,19 @@ class GameManager {
             this.eventsManager.action={}
             this.endGame()
         }
-        if(e instanceof Heart)
+        if(e instanceof Heart){
             this.score += 50;
-        if(e instanceof Potion)
+            this.soundManager.play('/public/assets/sounds/pickup.mp3');
+        }
+        if(e instanceof Potion){
             this.score += 75;
-        if(e instanceof Key)
+            this.soundManager.play('/public/assets/sounds/pickup.mp3');
+        }
+        if(e instanceof Key){
             this.score += 200;
+            this.soundManager.play('/public/assets/sounds/pickup.mp3');
+        }
+
     }
 
     nextLevel(){

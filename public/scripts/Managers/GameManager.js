@@ -37,7 +37,8 @@ class GameManager {
         this.spriteManager = new SpriteManager();   // подготовка массива sprites, отрисовка объектов будет уже непосредственно в this.draw(), где перебираются объекты и вызывается draw()
         this.eventsManager = new EventsManager(canvas);
         this.soundManager = new SoundManager();
-        this.soundManager.loadArray(['fireball.mp3', 'crunch.mp3', 'background.mp3']);
+        this.soundManager.loadArray(['/public/assets/sounds/fireball.mp3', '/public/assets/sounds/crunch.mp3', '/public/assets/sounds/background.mp3']);
+        this.soundManager.play('/public/assets/sounds/background.mp3', {looping: true});
         
 
         // подключаем остальные менеджеры
@@ -63,7 +64,6 @@ class GameManager {
         this.interval = setInterval( (( (self) => () => {
             self.update();
         })(this)), 100 );
-        this.soundManager.play('./public/assets/sounds/background.mp3', {looping: true});
         // установка ссылки на босса(для получения актуальных координат) и интервала его выстрелов
         if(!this.boss && this.curLevel === 2) {
             setTimeout(() => {
@@ -106,22 +106,22 @@ class GameManager {
         if (this.eventsManager.action['right'])
             this.player.move_x = 1;
         if (this.eventsManager.action['fire_up']) {
-            this.soundManager.play('fireball.mp3');
+            this.soundManager.play('/public/assets/sounds/fireball.mp3');
             this.player.fire(this, 0 ,-1);
             this.eventsManager.action['fire_up'] = false;
         }
         if (this.eventsManager.action['fire_right']) {
-            this.soundManager.play('fireball.mp3');
+            this.soundManager.play('/public/assets/sounds/fireball.mp3');
             this.player.fire(this, 1, 0);
             this.eventsManager.action['fire_right'] = false;
         }
         if (this.eventsManager.action['fire_down']) {
-            this.soundManager.play('fireball.mp3');
+            this.soundManager.play('/public/assets/sounds/fireball.mp3');
             this.player.fire(this, 0 , 1);
             this.eventsManager.action['fire_down'] = false;
         }
         if (this.eventsManager.action['fire_left']) {
-            this.soundManager.play('fireball.mp3');
+            this.soundManager.play('/public/assets/sounds/fireball.mp3');
             this.player.fire(this, -1 , 0);
             this.eventsManager.action['fire_left'] = false;
         }
@@ -201,7 +201,6 @@ class GameManager {
                 }
                 if(e.isKilled()){
                     this.kill(e)
-
                 }
             } catch(ex) {
                 console.log(ex);
@@ -229,6 +228,9 @@ class GameManager {
     }
     kill(e) {   // объект который необходимо убрать с карты
         this.laterKill.push(e)
+        //setTimeout(()=>{
+        //    this.soundManager.play('/public/assets/sounds/crunch.mp3');
+        //}, 300)
         if(e instanceof Skeleton) {
             this.score += 100;
             this.enemiesDeadsCount++;
@@ -269,15 +271,45 @@ class GameManager {
             s += 'You LOSE this game!'
         else
             s += 'You WIN this game!'
-        /*
-        const scores = new Map(JSON.parse(localStorage.scores ?? '[]'));
-        if ((scores.get(localStorage.name) ?? 0) <= this.score) { scores.set(localStorage.name, this.score); }
-        localStorage.setItem('scores', JSON.stringify(Array.from(scores.entries())));
-        */
+        this.updateLeaderboard()
         alert(`${s} Your score: ${this.score}!`);
         location.href = 'http://localhost:8080/start';
 
     }
+
+    updateLeaderboard(){
+        //проверка рекордов
+        localStorage.setItem('game.score', this.score)
+        let tmp = localStorage['game.leaderBoard'];
+        if(!tmp){
+            let leaderBoard = new Array(1);
+            leaderBoard[0] = new Array(2);
+            leaderBoard[0][0] = localStorage['game.username'];
+            leaderBoard[0][1] = this.score;
+            localStorage.setItem('game.leaderBoard', JSON.stringify(leaderBoard));
+        }
+        else{
+            let arr = JSON.parse(localStorage.getItem('game.leaderBoard'));
+            let userWas = false;
+            for(let i=0; i<arr.length; i++){
+                if(arr[i][0] === localStorage['game.username']){
+                    if(this.score > arr[i][1])
+                        arr[i][1] = this.score;
+                    userWas = true;
+                }
+            }
+            if(!userWas)
+                arr.push([localStorage['game.username'], this.score]);
+            arr.sort((function(index){
+                return function(a, b){
+                    return (a[index] === b[index] ? 0 : (a[index] < b[index] ? 1 : -1));
+                };
+            })(1));
+            localStorage.setItem('game.leaderBoard', JSON.stringify(arr));
+        }
+    }
+
+    
 }
 
 window.GameManager = GameManager;

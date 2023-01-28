@@ -2,7 +2,7 @@
     height:100%;
     display:flex;
     flex-direction:column;
-    justify-content:center
+    justify-content:center;
 }
 .greeting{
     border:1px solid #fff;
@@ -13,8 +13,10 @@
     flex-direction:column;
     align-items:center;
 }
+
 .greeting-text{
     font-weight: 600;
+    text-shadow: mediumpurple 0 0 5px;
 }
 .greeting-button{
     border:1px solid #fff;
@@ -44,10 +46,11 @@
     color: gold;
     text-shadow: #FFF 0 0 3px;
 }
-.leaderboard-warning {
+.leaderboard-string {
     color: lightyellow;
     font-size: 16px;
     font-style: italic;
+    text-shadow: #FFF 0 0 3px;
 }
 .form-box {
     display: flex;

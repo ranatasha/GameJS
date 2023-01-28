@@ -1,4 +1,4 @@
-<h1> Simple 2D Game on Javascript</h1>
+<h1> Single Player 2D Game on Javascript</h1>
 <h3>• With using Express, Tiled Map, Pug •</h3>
 
 <h2>Installation and launch</h2>

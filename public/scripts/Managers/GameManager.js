@@ -71,7 +71,7 @@ class GameManager {
                 this.bossInterval = setInterval(() => {
                     this.boss.fire(this)
                 }, 3000)
-            }, 200)
+            }, 100)
         }
     }
 
@@ -232,12 +232,10 @@ class GameManager {
         if(e instanceof Skeleton) {
             this.score += 100;
             this.enemiesDeadsCount++;
-            console.log(this.enemiesDeadsCount)
         }
         if(e instanceof Boss){
             this.score += 500;
             this.enemiesDeadsCount++;
-            console.log(this.enemiesDeadsCount)
             this.eventsManager.action={}
             this.endGame()
         }
@@ -256,7 +254,7 @@ class GameManager {
         } else{
             this.curLevel += 1;
             this.loadLevel(this.curLevel);
-            alert('Вы переходите на следующий уровень');
+            document.getElementById('msg').innerHTML = `Вы перешли на следующий уровень. Убейте босса.`;
             this.play();
         }
     }

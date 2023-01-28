@@ -33,10 +33,6 @@
     // update() реализовано общим принципом в PhysicManager, в GameManager update() каждого объекта будет выполняться через PhysicManager.update(obj)
     
     onTouchEntity(obj){
-        if(obj instanceof Fireball){
-            obj.lifetime -= 50;
-            obj.kill()
-        }
         if(obj instanceof  Player){
             obj.lifetime -= 3;
         }

@@ -32,7 +32,17 @@
     // update() реализовано общим принципом в PhysicManager, в GameManager update() каждого объекта будет выполняться через PhysicManager.update(obj)
     
     // onTouchEntity(obj) - обработка встречи с игроком лежит на игроке, во время встречи с боссом, стрела просто уничтожается(прописано у босса onTouchEntity)
-
+    // не должна на игроке, поскольку стрела может прилететь в спину, а onTouchEntity для стрелы вызывается, только если стрела находится на клетке
+    onTouchEntity(obj){
+        if(obj instanceof Player){
+            obj.lifetime -= 10;
+            this.kill()
+        }
+        if(obj instanceof Fireball){
+            obj.kill()
+            this.kill()
+        }
+    }
     onTouchMap(ts, passableCells){
         if (passableCells.indexOf(ts) === -1)   // если выстрел уперся в "стену"/препятствие - уничтожаем
             this.kill()

@@ -15,21 +15,11 @@
         this.move_x = 0;
         this.move_y = 0;
         this.currentSprite = 0;
-        this.isKilledBool = false; // ударился выстрел об стену или нет, чтобы потом проверять isKilled() после update() шага игры - добавлять в  gameManager.laterKill[] или нет 
-        // this.move_x = player.pos_x - click.pos_x;
-        // this.move_y = player.pos_y - click.pos_y;
-        //
-        // const normalized_x = this.move_x / (Math.abs(this.move_x)+Math.abs(this.move_y));
-        // const normalized_y = this.move_y / (Math.abs(this.move_x)+Math.abs(this.move_y));
-        // this.move_x = -1*normalized_x;
-        // this.move_y = -1*normalized_y;
-        // this.pos_x = player.pos_x + this.move_x*20;
-        // this.pos_y = player.pos_y + this.move_y*20;
+        this.isKilledBool = false; // ударился выстрел об стену или нет, чтобы потом проверять isKilled() после update() шага игры - добавлять в  gameManager.laterKill[] или нет
     }
 
     draw(spriteManager, ctx) {
         this.currentSprite = this.currentSprite % 4 + 1;
-        console.log("I'm drawing a fireball. Current Sprite:", this.currentSprite)
         if (this.move_x > 0 && this.move_y === 0)
             spriteManager.drawSprite(ctx, `fireball_right${this.currentSprite}`, this.pos_x, this.pos_y);
         if (this.move_x < 0 && this.move_y === 0)
@@ -43,7 +33,21 @@
     // update() реализовано общим принципом в PhysicManager, в GameManager update() каждого объекта будет выполняться через PhysicManager.update(obj)
 
     // onTouchEntity(obj) - обработка встречи с боссом или скелетом лежит на этих же объектах
-    
+    // не должна быть только на боссе, поскольку удар может прилететь в спину, а onTouchEntity у босса вызывается, только если босс пойдет прямо на ударный шар
+    onTouchEntity(obj){
+        if(obj instanceof Boss){
+            obj.lifetime -= 15;
+            this.kill()
+        }
+        if(obj instanceof Skeleton){
+            obj.lifetime -= 25;
+            this.kill()
+        }
+        if(obj instanceof Arrow){
+            obj.kill()
+            this.kill()
+        }
+    }
     onTouchMap(ts, passableCells) {
         if (passableCells.indexOf(ts) === -1)   // если выстрел уперся в "стену"/препятствие - уничтожаем
             this.kill()

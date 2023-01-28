@@ -42,7 +42,7 @@
                  "rotation":0,
                  "visible":true,
                  "width":32,
-                 "x":417,
+                 "x":354,
                  "y":224
                 }, 
                 {
@@ -54,7 +54,51 @@
                  "visible":true,
                  "width":32,
                  "x":512,
-                 "y":257.333333333333
+                 "y":256.083333333333
+                }, 
+                {
+                 "class":"Heart",
+                 "height":32,
+                 "id":3,
+                 "name":"Heart2",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":198.333333333333,
+                 "y":65.3333333333333
+                }, 
+                {
+                 "class":"Heart",
+                 "height":32,
+                 "id":4,
+                 "name":"Heart1",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":131.666666666667,
+                 "y":153.333333333333
+                }, 
+                {
+                 "class":"Potion",
+                 "height":32,
+                 "id":5,
+                 "name":"Potion1",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":225.333333333333,
+                 "y":314
+                }, 
+                {
+                 "class":"Potion",
+                 "height":32,
+                 "id":6,
+                 "name":"Potion2",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":309,
+                 "y":141
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -63,7 +107,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":3,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"left-up",
  "tiledversion":"1.9.2",

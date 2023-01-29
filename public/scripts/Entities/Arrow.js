@@ -42,6 +42,16 @@
             obj.kill()
             this.kill()
         }
+        if(obj instanceof Key){
+            this.kill()
+        }
+        if(obj instanceof Potion){
+            this.kill()
+        }
+        if(obj instanceof Heart){
+            this.kill()
+        }
+
     }
     
     kill(){ // Уничтожения объекта

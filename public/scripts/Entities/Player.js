@@ -76,21 +76,9 @@
         
         fb.move_x = x;    // направление выстрела задается пользователем в зав-ти от нажатой стрелки
         fb.move_y = y;
-        
-        // устанавливаем координаты стрелы в зависимости от направления выстрела
-        if(fb.move_x > 0 && fb.move_y === 0){
-            fb.pos_x = this.pos_x;         // fireball появится справа от игрока
-            fb.pos_y = this.pos_y;
-        } else if(fb.move_x < 0 && fb.move_y === 0){
-            fb.pos_x = this.pos_x;          // fireball появится слева от игрока
-            fb.pos_y = this.pos_y;
-        } else if(fb.move_x === 0 && fb.move_y > 0){
-            fb.pos_x = this.pos_x;
-            fb.pos_y = this.pos_y;  // fireball появится снизу от игрока
-        } else if(fb.move_x === 0 && fb.move_y < 0){
-            fb.pos_x = this.pos_x;
-            fb.pos_y = this.pos_y; // fireball появится сверху от игрока
-        }
+        fb.pos_x = this.pos_x;
+        fb.pos_y = this.pos_y;
+
         gameManager.entities.push(fb)
     }
 }
